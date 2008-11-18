@@ -1,14 +1,14 @@
 Summary: A set of system configuration and setup files.
 Name: setup
-Version: 2.6.17
+Version: 2.6.18
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
 Source: setup-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
-BuildRequires: bash tcsh
-Conflicts: initscripts < 4.26, bash <= 2.0.4-21 
+BuildRequires: bash tcsh perl
+Conflicts: initscripts < 4.26, bash <= 2.0.4-21
 
 %description
 The setup package contains a set of important system configuration and
@@ -76,6 +76,17 @@ rm -rf %{buildroot}
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
+* Tue Nov 18 2008 Ondrej Vasik <ovasik@redhat.com> 2.6.18-1
+- again process profile.d scripts in noninteractive shells,
+  but do not display stderr/stdout messages(#457243)
+- fix wrong prompt for csh/tcsh (#443854)
+- don't show error message about missing hostname in profile
+  (#301481)
+- export PATH after processing profile.d scripts (#449286)
+- Include new serviceslint from rawhide for speedup (#465642)
+- Cleaned up services due to newly discovered bugs
+  in it with new serviceslint
+
 * Fri Jul 25 2008 Phil Knirsch <pknirsch@redhat.com> 2.6.17-1
 - Temporarily added rquotad to /etc/services
 
