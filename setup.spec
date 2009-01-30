@@ -1,15 +1,19 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.7.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Public Domain
 Group: System Environment/Base
 Source: setup-%{version}.tar.bz2
+URL: https://fedorahosted.org/setup/
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 BuildRequires: bash tcsh perl
 Conflicts: initscripts < 4.26, bash <= 2.0.4-21
 Patch1: setup-2.7.4.patch
+Patch2: setup-2.7.4-uidgid.patch
+Patch3: setup-2.7.4-protocolsservices.patch
+Patch4: setup-2.7.4-rxvt.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -18,6 +22,9 @@ setup files, such as passwd, group, and profile.
 %prep
 %setup -q
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 %build
 # Run any sanity checks.
@@ -48,7 +55,7 @@ rm -f %{buildroot}/etc/setup.spec
 rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc uidgid
 %verify(not md5 size mtime) %config(noreplace) /etc/passwd
 %verify(not md5 size mtime) %config(noreplace) /etc/group
@@ -64,10 +71,10 @@ rm -rf %{buildroot}
 %verify(not md5 size mtime) %config(noreplace) /etc/hosts.deny
 %verify(not md5 size mtime) %config(noreplace) /etc/motd
 %config(noreplace) /etc/printcap
-%config /etc/inputrc
+%config(noreplace) /etc/inputrc
 %config(noreplace) /etc/bashrc
 %config(noreplace) /etc/profile
-%config /etc/protocols
+%config(noreplace) /etc/protocols
 %attr(0600,root,root) %config(noreplace,missingok) /etc/securetty
 %config(noreplace) /etc/csh.login
 %config(noreplace) /etc/csh.cshrc
@@ -78,6 +85,18 @@ rm -rf %{buildroot}
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
+* Fri Jan 30 2009 Ondrej Vasik <ovasik@redhat.com> 2.7.4-3
+- add gid 87 reservation for polkituser, add gid reservation
+  for group cdrom(:11), dialout(:18), tape(:33) , kvm (:36) ,
+  uidgid pair for pkiuser(17:17), uid for vdsm user (36:),
+  make uidgid file better parseable
+- do not export INPUTRC(to respect just created ~/.inputrc)
+- update procols to later IANA list(2008-04-18)
+- update services to later IANA list(2008-11-17)
+- add URL, few spec files fixes, mark /etc/protocols and
+  /etc/inputrc %%config(noreplace)
+- add support for ctrl+arrow keys in rxvt(#474110)
+
 * Tue Nov 18 2008 Ondrej Vasik <ovasik@redhat.com> 2.7.4-2
 - again process profile.d scripts in noninteractive shells,
   but do not display stderr/stdout messages(#457243)
@@ -206,7 +225,7 @@ rm -rf %{buildroot}
 
 * Mon Jun 20 2005 Bill Nottingham <notting@redhat.com> 2.5.46-1
 - add buildrequires on bash, tcsh (#161016)
-- move core dump size setting from csh.login to csh.cshrc (#156914) 
+- move core dump size setting from csh.login to csh.cshrc (#156914)
 
 * Fri Jun 17 2005 Bill Nottingham <notting@redhat.com> 2.5.45-1
 - ksh doesn't implement EUID/UID. Work around that. (#160731)
@@ -287,7 +306,7 @@ rm -rf %{buildroot}
 - allocate uid/gid for mgetty
 
 * Thu Jan  9 2003 Dan Walsh <dwalsh@redhat.com> 2.5.23-1
-- added PXE to /etc/services 
+- added PXE to /etc/services
 
 * Wed Jan  1 2003 Bill Nottingham <notting@redhat.com> 2.5.22-1
 - remove bogus entries from inputrc (#80652)
@@ -438,7 +457,7 @@ rm -rf %{buildroot}
 - fix inputrc, Yet Again. (#28617)
 
 * Thu Feb 15 2001 Bill Nottingham <notting@redhat.com>
-- add in uidgid file, put it in %doc
+- add in uidgid file, put it in %%doc
 
 * Wed Feb  7 2001 Adrian Havill <havill@redhat.com>
 - bindkey for delete in the case of tcsh
@@ -468,8 +487,8 @@ rm -rf %{buildroot}
   support (postfix >= 20001030-2)
 
 * Sun Aug  6 2000 Bill Nottingham <notting@redhat.com>
-- /var/log/lastlog is %config(noreplace) (#15412)
-- some of the various %verify changes (#14819)
+- /var/log/lastlog is %%config(noreplace) (#15412)
+- some of the various %%verify changes (#14819)
 
 * Thu Aug  3 2000 Nalin Dahyabhai <nalin@redhat.com>
 - linuxconf should be 98, not 99
@@ -570,10 +589,10 @@ rm -rf %{buildroot}
 - added alias pointing to imap from imap2
 
 * Tue Mar 23 1999 Preston Brown <pbrown@redhat.com>
-- updated protocols/services from debian to comply with more modern 
+- updated protocols/services from debian to comply with more modern
 - IETF/RFC standards
 
-* Sun Mar 21 1999 Cristian Gafton <gafton@redhat.com> 
+* Sun Mar 21 1999 Cristian Gafton <gafton@redhat.com>
 - auto rebuild in the new build environment (release 4)
 
 * Thu Feb 18 1999 Jeff Johnson <jbj@redhat.com>
@@ -592,7 +611,7 @@ rm -rf %{buildroot}
 - /etc/profile uses $i, which needs to be unset
 
 * Mon Nov 03 1997 Donnie Barnes <djb@redhat.com>
-- made /etc/passwd and /etc/group %config(noreplace)
+- made /etc/passwd and /etc/group %%config(noreplace)
 
 * Mon Oct 20 1997 Erik Troan <ewt@redhat.com>
 - removed /etc/inetd.conf, /etc/rpc
