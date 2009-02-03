@@ -1,0 +1,58 @@
+diff -urNp setup-2.6.18-orig/bashrc setup-2.6.18/bashrc
+--- setup-2.6.18-orig/bashrc	2008-11-18 15:45:51.000000000 +0100
++++ setup-2.6.18/bashrc	2009-02-03 14:06:41.000000000 +0100
+@@ -18,14 +18,14 @@ if [ "$PS1" ]; then
+ 		if [ -e /etc/sysconfig/bash-prompt-xterm ]; then
+ 			PROMPT_COMMAND=/etc/sysconfig/bash-prompt-xterm
+ 		else
+-	    	PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}"; echo -ne "\007"'
++			PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}"; echo -ne "\007"'
+ 		fi
+ 		;;
+ 	screen)
+ 		if [ -e /etc/sysconfig/bash-prompt-screen ]; then
+ 			PROMPT_COMMAND=/etc/sysconfig/bash-prompt-screen
+ 		else
+-		PROMPT_COMMAND='echo -ne "\033_${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}"; echo -ne "\033\\"'
++			PROMPT_COMMAND='echo -ne "\033_${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}"; echo -ne "\033\\"'
+ 		fi
+ 		;;
+ 	*)
+diff -urNp setup-2.6.18-orig/csh.login setup-2.6.18/csh.login
+--- setup-2.6.18-orig/csh.login	2008-11-18 15:45:51.000000000 +0100
++++ setup-2.6.18/csh.login	2009-02-03 14:08:35.000000000 +0100
+@@ -17,10 +17,6 @@ endif
+ setenv HOSTNAME `/bin/hostname`
+ set history=1000
+ 
+-if ( ! -f $HOME/.inputrc ) then
+-	setenv INPUTRC /etc/inputrc
+-endif
+-
+ if ( -d /etc/profile.d ) then
+         set nonomatch
+         foreach i ( /etc/profile.d/*.csh )
+diff -urNp setup-2.6.18-orig/profile setup-2.6.18/profile
+--- setup-2.6.18-orig/profile	2008-11-18 15:45:51.000000000 +0100
++++ setup-2.6.18/profile	2009-02-03 14:08:04.000000000 +0100
+@@ -38,11 +38,7 @@ fi
+ HOSTNAME=`/bin/hostname 2>/dev/null`
+ HISTSIZE=1000
+ 
+-if [ -z "$INPUTRC" -a ! -f "$HOME/.inputrc" ]; then
+-    INPUTRC=/etc/inputrc
+-fi
+-
+-export PATH USER LOGNAME MAIL HOSTNAME HISTSIZE INPUTRC
++export PATH USER LOGNAME MAIL HOSTNAME HISTSIZE
+ 
+ for i in /etc/profile.d/*.sh ; do
+     if [ -r "$i" ]; then
+@@ -54,7 +50,5 @@ for i in /etc/profile.d/*.sh ; do
+     fi
+ done
+ 
+-export PATH
+-
+ unset i
+ unset pathmunge

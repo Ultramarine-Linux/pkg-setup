@@ -1,14 +1,20 @@
 Summary: A set of system configuration and setup files.
 Name: setup
 Version: 2.6.18
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Public Domain
 Group: System Environment/Base
 Source: setup-%{version}.tar.bz2
+URL: https://fedorahosted.org/setup/
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 BuildRequires: bash tcsh perl
 Conflicts: initscripts < 4.26, bash <= 2.0.4-21
+Patch1: setup-2.6.18-inputrcexport.patch
+Patch2: setup-2.6.18-uidgid.patch
+Patch3: setup-2.6.18-protocolservices.patch
+Patch4: setup-2.6.18-rxvt.patch
+
 
 %description
 The setup package contains a set of important system configuration and
@@ -16,6 +22,10 @@ setup files, such as passwd, group, and profile.
 
 %prep
 %setup -q
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 %build
 # Run any sanity checks.
@@ -46,7 +56,7 @@ rm -f %{buildroot}/etc/setup.spec
 rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc uidgid
 %verify(not md5 size mtime) %config(noreplace) /etc/passwd
 %verify(not md5 size mtime) %config(noreplace) /etc/group
@@ -62,10 +72,10 @@ rm -rf %{buildroot}
 %verify(not md5 size mtime) %config(noreplace) /etc/hosts.deny
 %verify(not md5 size mtime) %config(noreplace) /etc/motd
 %config(noreplace) /etc/printcap
-%config /etc/inputrc
+%config(noreplace) /etc/inputrc
 %config(noreplace) /etc/bashrc
 %config(noreplace) /etc/profile
-%config /etc/protocols
+%config(noreplace) /etc/protocols
 %attr(0600,root,root) %config(noreplace,missingok) /etc/securetty
 %config(noreplace) /etc/csh.login
 %config(noreplace) /etc/csh.cshrc
@@ -76,6 +86,18 @@ rm -rf %{buildroot}
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
+* Fri Jan 30 2009 Ondrej Vasik <ovasik@redhat.com> 2.6.18-2
+- add gid 87 reservation for polkituser, add gid reservation
+  for group cdrom(:11), dialout(:18) tape (:33), kvm (:36),
+  uidgid pair for pkiuser(17:17), uid for vdsm user (36:),
+  make uidgid file better parseable
+- do not export INPUTRC(to respect just created ~/.inputrc)
+- update procols to later IANA list(2008-04-18)
+- update services to later IANA list(2008-11-17)
+- add URL, few spec files fixes, mark /etc/protocols and
+  /etc/inputrc %%config(noreplace)
+- add support for ctrl+arrow keys in rxvt(#474110)
+
 * Tue Nov 18 2008 Ondrej Vasik <ovasik@redhat.com> 2.6.18-1
 - again process profile.d scripts in noninteractive shells,
   but do not display stderr/stdout messages(#457243)
