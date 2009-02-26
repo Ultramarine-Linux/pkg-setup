@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.7.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Public Domain
 Group: System Environment/Base
 Source: setup-%{version}.tar.bz2
@@ -14,6 +14,7 @@ Patch1: setup-2.7.4.patch
 Patch2: setup-2.7.4-uidgid.patch
 Patch3: setup-2.7.4-protocolsservices.patch
 Patch4: setup-2.7.4-rxvt.patch
+Patch5: setup-2.7.4-ksh-portability.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -25,6 +26,7 @@ setup files, such as passwd, group, and profile.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 # Run any sanity checks.
@@ -85,6 +87,9 @@ rm -rf %{buildroot}
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
+* Thu Feb 26 2009 Ondrej Vasik <ovasik@redhat.com> 2.7.4-4
+- make output redirection work under ksh(#487419)
+
 * Fri Jan 30 2009 Ondrej Vasik <ovasik@redhat.com> 2.7.4-3
 - add gid 87 reservation for polkituser, add gid reservation
   for group cdrom(:11), dialout(:18), tape(:33) , kvm (:36) ,

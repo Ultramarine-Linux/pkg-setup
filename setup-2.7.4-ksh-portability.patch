@@ -1,0 +1,25 @@
+diff -urNp setup-2.7.4-orig/bashrc setup-2.7.4/bashrc
+--- setup-2.7.4-orig/bashrc	2009-02-26 13:03:54.000000000 +0100
++++ setup-2.7.4/bashrc	2009-02-26 13:05:13.000000000 +0100
+@@ -56,7 +56,7 @@ if ! shopt -q login_shell ; then # We're
+ 			if [ "$PS1" ]; then
+ 				. $i
+ 			else
+-				. $i &>/dev/null
++				. $i >/dev/null 2>&1
+ 			fi
+ 		fi
+ 	done
+Binární soubory setup-2.7.4-orig/.bashrc.swp a setup-2.7.4/.bashrc.swp jsou různé
+diff -urNp setup-2.7.4-orig/profile setup-2.7.4/profile
+--- setup-2.7.4-orig/profile	2009-02-26 13:03:54.000000000 +0100
++++ setup-2.7.4/profile	2009-02-26 13:04:52.000000000 +0100
+@@ -49,7 +49,7 @@ for i in /etc/profile.d/*.sh ; do
+         if [ "$PS1" ]; then
+             . $i
+         else
+-            . $i &>/dev/null
++            . $i >/dev/null 2>&1
+         fi
+     fi
+ done
