@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files.
 Name: setup
 Version: 2.6.18
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Public Domain
 Group: System Environment/Base
 Source: setup-%{version}.tar.bz2
@@ -14,6 +14,7 @@ Patch1: setup-2.6.18-inputrcexport.patch
 Patch2: setup-2.6.18-uidgid.patch
 Patch3: setup-2.6.18-protocolservices.patch
 Patch4: setup-2.6.18-rxvt.patch
+Patch5: setup-2.6.18-ksh-portability.patch
 
 
 %description
@@ -26,6 +27,7 @@ setup files, such as passwd, group, and profile.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 # Run any sanity checks.
@@ -86,6 +88,10 @@ rm -rf %{buildroot}
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
+* Thu Feb 26 2009 Ondrej Vasik <ovasik@redhat.com> 2.6.18-3
+- fix non-portable redirect (&>) used in /etc/profile and
+  /etc/bashrc which causes spurious ksh login output(#487419)
+
 * Fri Jan 30 2009 Ondrej Vasik <ovasik@redhat.com> 2.6.18-2
 - add gid 87 reservation for polkituser, add gid reservation
   for group cdrom(:11), dialout(:18) tape (:33), kvm (:36),

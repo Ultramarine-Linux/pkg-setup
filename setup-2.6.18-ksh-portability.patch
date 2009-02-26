@@ -1,0 +1,24 @@
+diff -urNp setup-2.6.18-orig/bashrc setup-2.6.18/bashrc
+--- setup-2.6.18-orig/bashrc	2009-02-26 13:22:36.000000000 +0100
++++ setup-2.6.18/bashrc	2009-02-26 13:23:45.000000000 +0100
+@@ -56,7 +56,7 @@ if ! shopt -q login_shell ; then # We're
+ 			if [ "$PS1" ]; then
+ 				. $i
+ 			else
+-				. $i &>/dev/null
++				. $i >/dev/null 2>&1
+ 			fi
+ 		fi
+ 	done
+diff -urNp setup-2.6.18-orig/profile setup-2.6.18/profile
+--- setup-2.6.18-orig/profile	2009-02-26 13:22:36.000000000 +0100
++++ setup-2.6.18/profile	2009-02-26 13:23:32.000000000 +0100
+@@ -45,7 +45,7 @@ for i in /etc/profile.d/*.sh ; do
+         if [ "$PS1" ]; then
+             . $i
+         else
+-            . $i &>/dev/null
++            . $i >/dev/null 2>&1
+         fi
+     fi
+ done
