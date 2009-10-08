@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
@@ -50,13 +50,16 @@ rm -f %{buildroot}/etc/setup.spec
 %clean
 rm -rf %{buildroot}
 
-%postun
 #throw away useless and dangerous update stuff until rpm will be able to
 #handle it ( http://rpm.org/ticket/6 )
-rm -f /etc/passwd.rpmnew
-rm -f /etc/shadow.rpmnew
-rm -f /etc/group.rpmnew
-rm -f /etc/gshadow.rpmnew
+%post -p <lua>
+for i, name in ipairs({"passwd", "shadow", "group", "gshadow"}) do
+     os.remove("/etc/"..name..".rpmnew")
+end
+if (os.execute("") == 0 and posix.access("/bin/sed", "x")) then
+  os.execute("sed -i -e 's/devpts  defaults/devpts  gid=5,mode=620/' /etc/fstab >/dev/null 2>&1 || :")
+end
+
 
 %files
 %defattr(-,root,root)
@@ -90,6 +93,11 @@ rm -f /etc/gshadow.rpmnew
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
+* Mon Oct 08 2009 Ondrej Vasik <ovasik@redhat.com> 2.8.3-2
+- adjust /dev/pts fstab line if broken by installation
+  (#515521)
+- use <lua> scriptlet for deleting files in correct way
+
 * Fri Apr 10 2009 Ondrej Vasik <ovasik@redhat.com> 2.8.3-1
 - do not disable coredumps in profile/csh.cshrc scripts,
   coredumps already disabled in rawhide's RLIMIT_CORE(#495035)
