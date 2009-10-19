@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
@@ -57,7 +57,7 @@ for i, name in ipairs({"passwd", "shadow", "group", "gshadow"}) do
      os.remove("/etc/"..name..".rpmnew")
 end
 if (os.execute("") == 0 and posix.access("/bin/sed", "x")) then
-  os.execute("sed -i -e 's/devpts  defaults/devpts  gid=5,mode=620/' /etc/fstab >/dev/null 2>&1 || :")
+  os.execute("sed -i -e '/^\\s*[^#].*devpts\\s\\+defaults/{s/devpts\\s\\+defaults/devpts  gid=5,mode=620/;a\\#devpts options modified by setup update to fix #515521 ugly way' -e \\} /etc/fstab >/dev/null 2>&1 || :")
 end
 
 
@@ -93,7 +93,10 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
-* Mon Oct 08 2009 Ondrej Vasik <ovasik@redhat.com> 2.8.3-2
+* Mon Oct 19 2009 Ondrej Vasik <ovasik@redhat.com> 2.8.3-3
+- adjust sed expression fixing #515521 to be more generic
+
+* Mon Oct 05 2009 Ondrej Vasik <ovasik@redhat.com> 2.8.3-2
 - adjust /dev/pts fstab line if broken by installation
   (#515521)
 - use <lua> scriptlet for deleting files in correct way
