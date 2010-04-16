@@ -1,0 +1,83 @@
+diff -urNp setup-2.8.9-orig/bashrc setup-2.8.9/bashrc
+--- setup-2.8.9-orig/bashrc	2009-09-08 08:55:46.000000000 +0200
++++ setup-2.8.9/bashrc	2010-03-31 12:56:44.000000000 +0200
+@@ -54,8 +54,9 @@ fi
+ 
+ if ! shopt -q login_shell ; then # We're not a login shell
+     # Need to redefine pathmunge, it get's undefined at the end of /etc/profile
++    # Ok to use faster bashism here as /etc/bashrc is used only by bash
+     pathmunge () {
+-        if ! echo $PATH | /bin/egrep -q "(^|:)$1($|:)" ; then
++        if [[ ! "$PATH" =~ "(^|:)$1(:|$)" ]];then
+             if [ "$2" = "after" ] ; then
+                 PATH=$PATH:$1
+             else
+diff -urNp setup-2.8.9-orig/csh.login setup-2.8.9/csh.login
+--- setup-2.8.9-orig/csh.login	2009-09-08 08:55:46.000000000 +0200
++++ setup-2.8.9/csh.login	2010-03-31 12:56:44.000000000 +0200
+@@ -2,15 +2,13 @@
+ 
+ # System wide environment and startup programs, for login setup
+ 
+-if ($?PATH) then
+-	if ( "${path}" !~ */usr/X11R6/bin* ) then
+-		setenv PATH "${PATH}:/usr/X11R6/bin"
+-        endif
++if ( $?PATH ) then
++  #do not override user specified PATH
+ else
+ 	if ( $uid == 0 ) then
+-		setenv PATH "/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin"
++		setenv PATH "/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin"
+ 	else
+-		setenv PATH "/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/X11R6/bin"
++		setenv PATH "/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
+ 	endif
+ endif
+ 
+diff -urNp setup-2.8.9-orig/profile setup-2.8.9/profile
+--- setup-2.8.9-orig/profile	2009-09-08 08:55:46.000000000 +0200
++++ setup-2.8.9/profile	2010-03-31 12:56:44.000000000 +0200
+@@ -9,7 +9,7 @@
+ # prevent need for merging in future updates.
+ 
+ pathmunge () {
+-    if ! echo $PATH | /bin/egrep -q "(^|:)$1($|:)" ; then
++    if ! echo $PATH | /bin/grep -qE "(^|:)$1($|:)" ; then
+        if [ "$2" = "after" ] ; then
+           PATH=$PATH:$1
+        else
+@@ -18,10 +18,16 @@ pathmunge () {
+     fi
+ }
+ 
+-# ksh workaround
+-if [ -z "$EUID" -a -x /usr/bin/id ]; then
+-    EUID=`id -u`
+-    UID=`id -ru`
++
++if [ -x /usr/bin/id ]; then
++    if [ -z "$EUID" ]; then
++        # ksh workaround
++        EUID=`id -u`
++        UID=`id -ru`
++    fi
++    USER="`id -un`"
++    LOGNAME=$USER
++    MAIL="/var/spool/mail/$USER"
+ fi
+ 
+ # Path manipulation
+@@ -35,12 +41,6 @@ else
+     pathmunge /sbin after
+ fi
+ 
+-if [ -x /usr/bin/id ]; then
+-    USER="`id -un`"
+-    LOGNAME=$USER
+-    MAIL="/var/spool/mail/$USER"
+-fi
+-
+ HOSTNAME=`/bin/hostname 2>/dev/null`
+ HISTSIZE=1000
+ HISTCONTROL="ignoreboth"
