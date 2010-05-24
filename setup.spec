@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.9
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
@@ -91,6 +91,9 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
+* Mon May 24 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.9-3
+- speedup pathmunge() by using portable case(#544652)
+
 * Fri Apr 16 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.9-2
 - avoid one /usr/bin/id stat call in /etc/profile(#549056)
 - speed up pathmunge inside bashrc (#544652)

@@ -1,17 +1,3 @@
-diff -urNp setup-2.8.9-orig/bashrc setup-2.8.9/bashrc
---- setup-2.8.9-orig/bashrc	2009-09-08 08:55:46.000000000 +0200
-+++ setup-2.8.9/bashrc	2010-03-31 12:56:44.000000000 +0200
-@@ -54,8 +54,9 @@ fi
- 
- if ! shopt -q login_shell ; then # We're not a login shell
-     # Need to redefine pathmunge, it get's undefined at the end of /etc/profile
-+    # Ok to use faster bashism here as /etc/bashrc is used only by bash
-     pathmunge () {
--        if ! echo $PATH | /bin/egrep -q "(^|:)$1($|:)" ; then
-+        if [[ ! "$PATH" =~ "(^|:)$1(:|$)" ]];then
-             if [ "$2" = "after" ] ; then
-                 PATH=$PATH:$1
-             else
 diff -urNp setup-2.8.9-orig/csh.login setup-2.8.9/csh.login
 --- setup-2.8.9-orig/csh.login	2009-09-08 08:55:46.000000000 +0200
 +++ setup-2.8.9/csh.login	2010-03-31 12:56:44.000000000 +0200
@@ -35,20 +21,57 @@ diff -urNp setup-2.8.9-orig/csh.login setup-2.8.9/csh.login
  	endif
  endif
  
+diff -urNp setup-2.8.9-orig/bashrc setup-2.8.9/bashrc
+--- setup-2.8.9-orig/bashrc	2009-09-08 08:55:46.000000000 +0200
++++ setup-2.8.9/bashrc	2010-05-24 13:54:02.460443366 +0200
+@@ -55,13 +55,16 @@ fi
+ if ! shopt -q login_shell ; then # We're not a login shell
+     # Need to redefine pathmunge, it get's undefined at the end of /etc/profile
+     pathmunge () {
+-        if ! echo $PATH | /bin/egrep -q "(^|:)$1($|:)" ; then
+-            if [ "$2" = "after" ] ; then
+-                PATH=$PATH:$1
+-            else
+-                PATH=$1:$PATH
+-            fi
+-        fi
++        case ":${PATH}:" in
++            *:"$1":*)
++                ;;
++            *)
++                if [ "$2" = "after" ] ; then
++                    PATH=$PATH:$1
++                else
++                    PATH=$1:$PATH
++                fi
++        esac
+     }
+ 
+     # Only display echos from profile.d scripts if we are no login shell
 diff -urNp setup-2.8.9-orig/profile setup-2.8.9/profile
 --- setup-2.8.9-orig/profile	2009-09-08 08:55:46.000000000 +0200
-+++ setup-2.8.9/profile	2010-03-31 12:56:44.000000000 +0200
-@@ -9,7 +9,7 @@
++++ setup-2.8.9/profile	2010-05-24 13:53:07.520522008 +0200
+@@ -9,19 +9,28 @@
  # prevent need for merging in future updates.
  
  pathmunge () {
 -    if ! echo $PATH | /bin/egrep -q "(^|:)$1($|:)" ; then
-+    if ! echo $PATH | /bin/grep -qE "(^|:)$1($|:)" ; then
-        if [ "$2" = "after" ] ; then
-           PATH=$PATH:$1
-        else
-@@ -18,10 +18,16 @@ pathmunge () {
-     fi
+-       if [ "$2" = "after" ] ; then
+-          PATH=$PATH:$1
+-       else
+-          PATH=$1:$PATH
+-       fi
+-    fi
++    case ":${PATH}:" in
++        *:"$1":*)
++            ;;
++        *)
++            if [ "$2" = "after" ] ; then
++                PATH=$PATH:$1
++            else
++                PATH=$1:$PATH
++            fi
++    esac
  }
  
 -# ksh workaround
@@ -68,7 +91,7 @@ diff -urNp setup-2.8.9-orig/profile setup-2.8.9/profile
  fi
  
  # Path manipulation
-@@ -35,12 +41,6 @@ else
+@@ -35,12 +44,6 @@ else
      pathmunge /sbin after
  fi
  
