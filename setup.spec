@@ -1,6 +1,6 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.8.23
+Version: 2.8.28
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
@@ -89,6 +89,26 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
+* Fri Nov 12 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.28-1
+- update services and protocols to latest IANA reservations
+- reserve uidgid pair 109:109 for rhevm(#652287)
+
+* Tue Sep 07 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.27-1
+- add double quotes arround sourced profile.d scripts -
+  allow special characters in script names
+
+* Wed Aug 18 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.26-1
+- fix regression in the change to printf(#624900)
+
+* Thu Aug 12 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.25-1
+- use printf instead of echo in bashrc scripts(#620435)
+- update services to latest IANA
+
+* Wed Jul 28 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.24-1
+- do show messages from profile.d scripts in interactive
+  login ksh shell(#616418)
+- respect umask settings even with login shell
+
 * Tue Jun 29 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.23-1
 - reserve uidgid pair 172:172 for rtkit (#609171)
 
