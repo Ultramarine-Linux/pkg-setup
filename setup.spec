@@ -1,11 +1,12 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.28
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
 Source0: https://fedorahosted.org/releases/s/e/%{name}/%{name}-%{version}.tar.bz2
+Patch1: setup-2.8.28-changes.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch: noarch
 BuildRequires: bash tcsh perl
@@ -17,6 +18,7 @@ setup files, such as passwd, group, and profile.
 
 %prep
 %setup -q
+%patch1 -p1
 ./shadowconvert.sh
 
 %build
@@ -56,6 +58,9 @@ rm -rf %{buildroot}
 for i, name in ipairs({"passwd", "shadow", "group", "gshadow"}) do
      os.remove("/etc/"..name..".rpmnew")
 end
+if posix.access("/usr/bin/newaliases", "x") then
+  os.execute("/usr/bin/newaliases >/dev/null")
+end
 
 %files
 %defattr(-,root,root,-)
@@ -89,6 +94,14 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/mtab
 
 %changelog
+* Tue Aug 23 2011 Ondrej Vasik <ovasik@redhat.com> 2.8.28-2
+- do not override already set PROMPT_COMMAND envvar(#691425)
+- do not quit uidgidlint after first error, show all
+- run newaliases in the post to prevent sendmail messages
+  about old alias database in the log(#658921)
+- reflect the reserved username change of amanda
+  to amandabackup (#700807)
+
 * Fri Nov 12 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.28-1
 - update services and protocols to latest IANA reservations
 - reserve uidgid pair 109:109 for rhevm(#652287)

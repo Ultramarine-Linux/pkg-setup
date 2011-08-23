@@ -1,0 +1,119 @@
+diff -urNp setup-2.8.28-orig/aliases setup-2.8.28/aliases
+--- setup-2.8.28-orig/aliases	2010-11-12 12:56:31.000000000 +0100
++++ setup-2.8.28/aliases	2011-08-23 11:00:09.165818999 +0200
+@@ -43,7 +43,7 @@ fax:		root
+ quagga:		root
+ radvd:		root
+ pvm:		root
+-amanda:		root
++amandabackup:		root
+ privoxy:	root
+ ident:		root
+ named:		root
+diff -urNp setup-2.8.28-orig/bashrc setup-2.8.28/bashrc
+--- setup-2.8.28-orig/bashrc	2010-11-12 12:56:31.000000000 +0100
++++ setup-2.8.28/bashrc	2011-04-12 15:38:14.233064182 +0200
+@@ -10,35 +10,37 @@
+ 
+ # are we an interactive shell?
+ if [ "$PS1" ]; then
++  if [ -z "$PROMPT_COMMAND" ]; then
+     case $TERM in
+     xterm*)
+-        if [ -e /etc/sysconfig/bash-prompt-xterm ]; then
+-            PROMPT_COMMAND=/etc/sysconfig/bash-prompt-xterm
+-        else
+-            PROMPT_COMMAND='printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"'
+-        fi
+-        ;;
++      if [ -e /etc/sysconfig/bash-prompt-xterm ]; then
++          PROMPT_COMMAND=/etc/sysconfig/bash-prompt-xterm
++      else
++          PROMPT_COMMAND='printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"'
++      fi
++      ;;
+     screen)
+-        if [ -e /etc/sysconfig/bash-prompt-screen ]; then
+-            PROMPT_COMMAND=/etc/sysconfig/bash-prompt-screen
+-        else
+-            PROMPT_COMMAND='printf "\033]0;%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"'
+-        fi
+-        ;;
++      if [ -e /etc/sysconfig/bash-prompt-screen ]; then
++          PROMPT_COMMAND=/etc/sysconfig/bash-prompt-screen
++      else
++          PROMPT_COMMAND='printf "\033]0;%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"'
++      fi
++      ;;
+     *)
+-        [ -e /etc/sysconfig/bash-prompt-default ] && PROMPT_COMMAND=/etc/sysconfig/bash-prompt-default
+-        ;;
++      [ -e /etc/sysconfig/bash-prompt-default ] && PROMPT_COMMAND=/etc/sysconfig/bash-prompt-default
++      ;;
+     esac
+-    # Turn on checkwinsize
+-    shopt -s checkwinsize
+-    [ "$PS1" = "\\s-\\v\\\$ " ] && PS1="[\u@\h \W]\\$ "
+-    # You might want to have e.g. tty in prompt (e.g. more virtual machines)
+-    # and console windows
+-    # If you want to do so, just add e.g.
+-    # if [ "$PS1" ]; then
+-    #   PS1="[\u@\h:\l \W]\\$ "
+-    # fi
+-    # to your custom modification shell script in /etc/profile.d/ directory
++  fi
++  # Turn on checkwinsize
++  shopt -s checkwinsize
++  [ "$PS1" = "\\s-\\v\\\$ " ] && PS1="[\u@\h \W]\\$ "
++  # You might want to have e.g. tty in prompt (e.g. more virtual machines)
++  # and console windows
++  # If you want to do so, just add e.g.
++  # if [ "$PS1" ]; then
++  #   PS1="[\u@\h:\l \W]\\$ "
++  # fi
++  # to your custom modification shell script in /etc/profile.d/ directory
+ fi
+ 
+ if ! shopt -q login_shell ; then # We're not a login shell
+diff -urNp setup-2.8.28-orig/uidgid setup-2.8.28/uidgid
+--- setup-2.8.28-orig/uidgid	2010-11-12 12:56:31.000000000 +0100
++++ setup-2.8.28/uidgid	2011-08-23 11:02:43.061694196 +0200
+@@ -38,7 +38,7 @@ nscd	28	28	/		/bin/false	nscd
+ rpcuser	29	29	/var/lib/nfs		/bin/false	nfs-utils
+ console	-	31	-		-	dev
+ rpc	32	32	/		/bin/false	portmap
+-amanda	33	(6)	/var/lib/amanda		/bin/false	amanda
++amandabackup	33	(6)	/var/lib/amanda		/bin/false	amanda
+ tape	-	33	-		-	udev,MAKEDEV
+ netdump	34	34	/var/crash		/bin/bash	netdump-client, netdump-server
+ utempter	-	35	-		-	libutempter
+diff -urNp setup-2.8.28-orig/uidgidlint setup-2.8.28/uidgidlint
+--- setup-2.8.28-orig/uidgidlint	2010-11-12 12:56:31.000000000 +0100
++++ setup-2.8.28/uidgidlint	2011-04-12 15:40:17.198215648 +0200
+@@ -4,6 +4,7 @@ if [ -z "$*" ] ; then
+ 	echo Usage: `basename $0` uidgid
+ 	exit 1
+ fi
++error=0
+ # The format of the file is (currently)
+ for infile in "$@" ; do
+ 	uidlist=`tail -n +2 "$infile" | awk '{print $2}' | grep -v '?' | grep -v -e - | sort -nu`
+@@ -11,14 +12,14 @@ for infile in "$@" ; do
+ 	for uid in $uidlist ; do
+ 		if test `tail -n +2 "$infile" | awk '{print $2}' | grep '^'"$uid"'$' | wc -l` -ne 1 ; then
+ 			echo Duplicate UID: $uid
+-			exit 1
++			error=1
+ 		fi
+ 	done
+ 	for gid in $gidlist ; do
+-		if test `tail -n +2 "$infile" | awk '{print $3}' | grep '^'"$uid"'$' | wc -l` -ne 1 ; then
++		if test `tail -n +2 "$infile" | awk '{print $3}' | grep '^'"$gid"'$' | wc -l` -ne 1 ; then
+ 			echo Duplicate GID: $gid
+-			exit 1
++			error=1
+ 		fi
+ 	done
+ done
+-exit 0
++exit $error
