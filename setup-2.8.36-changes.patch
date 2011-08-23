@@ -1,0 +1,38 @@
+diff -urNp setup-2.8.36-orig/securetty setup-2.8.36/securetty
+--- setup-2.8.36-orig/securetty	2011-08-16 15:13:43.000000000 +0200
++++ setup-2.8.36/securetty	2011-08-23 10:02:37.816742508 +0200
+@@ -21,3 +21,9 @@ tty8
+ tty9
+ tty10
+ tty11
++hvc0
++hvc1
++hvsi0
++hvsi1
++hvsi2
++xvc0
+diff -urNp setup-2.8.36-orig/services setup-2.8.36/services
+--- setup-2.8.36-orig/services	2011-08-16 15:13:43.000000000 +0200
++++ setup-2.8.36/services	2011-08-23 09:51:08.588818354 +0200
+@@ -584,7 +584,7 @@ fido            60179/udp               
+ 
+ 
+ # Updated additional list from IANA with all missing services 04/07/2008
+-spr-itunes      0/tcp   spl-itunes      # Shirt Pocket netTunes
++#spr-itunes      0/tcp   spl-itunes      # Shirt Pocket netTunes - no port allocated
+ compressnet     2/tcp                   # Management Utility
+ compressnet     2/udp                   # Management Utility
+ #compressnet    3/tcp                   # Compression Process
+diff -urNp setup-2.8.36-orig/uidgid setup-2.8.36/uidgid
+--- setup-2.8.36-orig/uidgid	2011-08-16 15:13:43.000000000 +0200
++++ setup-2.8.36/uidgid	2011-08-23 09:42:12.335693907 +0200
+@@ -119,6 +119,9 @@ bacula	133	133	/var/spool/bacula		/sbin/
+ ricci	140	140	/var/lib/ricci		/sbin/nologin	ricci
+ luci	141	141	/var/lib/luci		/sbin/nologin	luci
+ stap-server	155	155	/var/lib/stap-server		/sbin/nologin	systemtap
++swift	160	160	/var/lib/swift		/sbin/nologin	openstack-swift
++glance	161	161	/var/lib/glance		/sbin/nologin	openstack-glance
++nova	162	162	/var/lib/nova		/sbin/nologin	openstack-nova
+ avahi-autoipd	170	170	/var/lib/avahi-autoipd		/sbin/nologin	avahi
+ pulse	171	171	/var/run/pulse		/sbin/nologin	pulseaudio
+ rtkit	172	172	/proc		/sbin/nologin	rtkit
