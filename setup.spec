@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.36
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
@@ -91,6 +91,10 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Tue Jan 03 2012 Ondrej Vasik <ovasik@redhat.com> 2.8.36-3
+- gopher home dir in uidgid should be /var/gopher - #752885
+- add ext4 to /etc/filesystems - #750506
+
 * Tue Aug 23 2011 Ondrej Vasik <ovasik@redhat.com> 2.8.36-2
 - reserve 160:160 for swift (openstack-swift) - #732442
 - reserve 161:161 for glance (openstack-glance) - #732442
