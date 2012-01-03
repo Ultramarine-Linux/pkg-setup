@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.33
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
@@ -9,6 +9,7 @@ Source0: https://fedorahosted.org/releases/s/e/%{name}/%{name}-%{version}.tar.bz
 BuildArch: noarch
 BuildRequires: bash tcsh perl
 Conflicts: initscripts < 4.26, bash <= 2.0.4-21
+Patch1: setup-2.8.33-changes.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -17,6 +18,7 @@ setup files, such as passwd, group, and profile.
 %prep
 %setup -q
 ./shadowconvert.sh
+%patch1 -p1
 
 %build
 
@@ -89,6 +91,13 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Tue Jan 03 2012 Ondrej Vasik <ovasik@redhat.com> 2.8.33-2
+- gopher home dir in uidgid should be /var/gopher - #752885
+- add ext4 to /etc/filesystems - #750506
+- comment out 0/tcp spr-itunes /etc/services entry (#710185)
+- add hvc[01], xvc0, hvsi[012] to /etc/securetty (#728030)
+
+
 * Thu May 19 2011 Ondrej Vasik <ovasik@redhat.com> 2.8.33-1
 - reflect the reserved username change of amanda
   to amandabackup (#700807)
