@@ -1,0 +1,11 @@
+diff -urNp setup-2.8.71-orig/uidgid setup-2.8.71/uidgid
+--- setup-2.8.71-orig/uidgid	2013-06-07 16:31:32.000000000 +0200
++++ setup-2.8.71/uidgid	2015-01-07 09:58:18.420196618 +0100
+@@ -36,6 +36,7 @@ postgres	26	26	/var/lib/pgsql		/bin/bash
+ mysql	27	27	/var/lib/mysql		/bin/bash	mysql
+ nscd	28	28	/		/bin/false	nscd
+ rpcuser	29	29	/var/lib/nfs		/bin/false	nfs-utils
++#Note: in F19-F21 gid 30 accidently used by tape
+ console	-	31	-		-	dev
+ rpc	32	32	/		/bin/false	portmap
+ amandabackup	33	(6)	/var/lib/amanda		/bin/false	amanda
