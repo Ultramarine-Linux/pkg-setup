@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.8.71
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
@@ -11,12 +11,15 @@ BuildRequires: bash tcsh perl
 Conflicts: filesystem < 3
 Conflicts: initscripts < 4.26, bash <= 2.0.4-21
 
+Patch1: setup-tapewronggroup.patch
+
 %description
 The setup package contains a set of important system configuration and
 setup files, such as passwd, group, and profile.
 
 %prep
 %setup -q
+%patch1 -p1
 ./shadowconvert.sh
 
 %build
@@ -45,6 +48,9 @@ rm -f %{buildroot}/etc/serviceslint
 rm -f %{buildroot}/etc/uidgidlint
 rm -f %{buildroot}/etc/shadowconvert.sh
 rm -f %{buildroot}/etc/setup.spec
+
+#remove fallout from patching
+rm -f %{buildroot}/etc/*.orig
 
 %clean
 rm -rf %{buildroot}
@@ -90,6 +96,9 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Wed Jan 07 2015 Ondrej Vasik <ovasik@redhat.com> 2.8.71-3
+- Make a note about accidental usage of gid 30 by tape group (#1179585)
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.8.71-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
