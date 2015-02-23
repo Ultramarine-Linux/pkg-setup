@@ -1,0 +1,8 @@
+diff -urNp setup-2.9.0-orig/filesystems setup-2.9.0/filesystems
+--- setup-2.9.0-orig/filesystems	2014-04-23 23:52:34.000000000 +0200
++++ setup-2.9.0/filesystems	2015-02-23 15:56:17.971716575 +0100
+@@ -7,3 +7,4 @@ iso9660
+ vfat
+ hfs
+ hfsplus
++*
