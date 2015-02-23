@@ -16,6 +16,7 @@ Conflicts: initscripts < 4.26, bash <= 2.0.4-21
 Patch1: setup-tapewronggroup.patch
 Patch2: setup-services.patch
 Patch3: setup-bashsyntax.patch
+Patch4: setup-newuid.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -26,6 +27,7 @@ setup files, such as passwd, group, and profile.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 ./shadowconvert.sh
 
 %build
@@ -105,6 +107,9 @@ end
 - update services to match latest IANA
 - bashrc: reflect new bash-4.3 behaviour to retain matching
   output (#1180283)
+- assign uidgid for systemd-network(192:192) - FPC 481,bz#1102002
+- assign uidgid for systemd-resolve(193:193) - FPC 481,bz#1102002 
+- remove uidgid reservation for systemd-journal-gateway (#1174304)
 
 * Wed Jan 07 2015 Ondrej Vasik <ovasik@redhat.com> 2.9.0-3
 - Make a note about accidental usage of gid 30 by tape group(#1179585)
