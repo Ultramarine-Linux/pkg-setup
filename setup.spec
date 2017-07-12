@@ -7,7 +7,7 @@ Group: System Environment/Base
 URL: https://fedorahosted.org/setup/
 Source0: https://fedorahosted.org/releases/s/e/%{name}/%{name}-%{version}.tar.bz2
 BuildArch: noarch
-BuildRequires: bash tcsh perl
+BuildRequires: bash tcsh perl-interpreter
 #require system release for saner dependency order
 Requires: system-release
 Conflicts: filesystem < 3
