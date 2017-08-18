@@ -1,6 +1,6 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.10.5
+Version: 2.10.7
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
@@ -47,6 +47,7 @@ rm -f %{buildroot}/etc/serviceslint
 rm -f %{buildroot}/etc/uidgidlint
 rm -f %{buildroot}/etc/shadowconvert.sh
 rm -f %{buildroot}/etc/setup.spec
+rm -rf %{buildroot}/etc/contrib
 
 %clean
 rm -rf %{buildroot}
@@ -94,6 +95,13 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Fri Aug 18 2017 Ondrej Vasik <ovasik@redhat.com> - 2.10.7-1
+- updated IANA services based on input from K.Vogel
+
+* Thu Aug 10 2017 Ondrej Vasik <ovasik@redhat.com> - 2.10.6-1
+- create contrib directory, 
+  add IANA parser script by V.Skyttä (#1380333)
+
 * Wed Dec 07 2016 Ondrej Vasik <ovasik@redhat.com> - 2.10.5-1
 - assign uidgid for cassandra(143:143) - (FPC #628)
 
@@ -334,7 +342,7 @@ end
 - reserve uidgid pair 109:109 for rhevm(#652287)
 
 * Tue Sep 07 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.27-1
-- add double quotes arround sourced profile.d scripts -
+- add double quotes around sourced profile.d scripts -
   allow special characters in script names
 
 * Wed Aug 18 2010 Ondrej Vasik <ovasik@redhat.com> 2.8.26-1
@@ -647,7 +655,7 @@ end
 - Removed /usr/X11R6/bin from default PATH (#173856)
 
 * Tue Jan 24 2006 Phil Knirsch <pknirsch@redhat.com>
-- Fixed bug with PROMPT_COMMAND being broken for wierd dirs (#142125)
+- Fixed bug with PROMPT_COMMAND being broken for weird dirs (#142125)
 - Added hfsplus to know filesystems (#172820)
 
 * Mon Oct 17 2005 Bill Nottingham <notting@redhat.com>
