@@ -4,8 +4,8 @@ Version: 2.10.10
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
-URL: https://fedorahosted.org/setup/
-Source0: https://fedorahosted.org/releases/s/e/%{name}/%{name}-%{version}.tar.bz2
+URL: https://pagure.io/setup
+Source0: https://releases.pagure.org/%{name}/%{name}-%{version}.tar.bz2
 BuildArch: noarch
 BuildRequires: bash tcsh perl-interpreter
 #require system release for saner dependency order
