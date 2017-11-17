@@ -1,11 +1,11 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.10.10
+Version: 2.11.1
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
-URL: https://pagure.io/setup
-Source0: https://releases.pagure.org/%{name}/%{name}-%{version}.tar.bz2
+URL: https://fedorahosted.org/setup/
+Source0: https://fedorahosted.org/releases/s/e/%{name}/%{name}-%{version}.tar.bz2
 BuildArch: noarch
 BuildRequires: bash tcsh perl-interpreter
 #require system release for saner dependency order
@@ -40,6 +40,8 @@ chmod 0644 %{buildroot}/etc/environment
 chmod 0400 %{buildroot}/etc/{shadow,gshadow}
 chmod 0644 %{buildroot}/var/log/lastlog
 touch %{buildroot}/etc/fstab
+mkdir -p %{buildroot}/etc/profile.d
+echo "#Add any required envvar overrides to this file, it is sourced from /etc/profile" >%{buildroot}/etc/profile.d/sh.local
 
 # remove unpackaged files from the buildroot
 rm -f %{buildroot}/etc/Makefile
@@ -91,11 +93,16 @@ end
 %config(noreplace) /etc/csh.login
 %config(noreplace) /etc/csh.cshrc
 %dir /etc/profile.d
+%config(noreplace) /etc/profile.d/sh.local
 %config(noreplace) %verify(not md5 size mtime) /etc/shells
 %ghost %attr(0644,root,root) %verify(not md5 size mtime) /var/log/lastlog
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Fri Nov 17 2017 Ondrej Vasik <ovasik@redhat.com> - 2.11.1-1
+- saslauthd belongs to cyrus-sasl and cyrus-imap packages
+- provide a way how to override set envvars through sh.local file(#1344007)
+
 * Mon Sep 04 2017 Ondrej Vasik <ovasik@redhat.com> - 2.10.10-1
 - we need to source /etc/bashrc from /etc/profile for bash
 
