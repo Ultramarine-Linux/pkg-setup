@@ -52,9 +52,6 @@ rm -f %{buildroot}/etc/shadowconvert.sh
 rm -f %{buildroot}/etc/setup.spec
 rm -rf %{buildroot}/etc/contrib
 
-%clean
-rm -rf %{buildroot}
-
 #throw away useless and dangerous update stuff until rpm will be able to
 #handle it ( http://rpm.org/ticket/6 )
 %post -p <lua>
