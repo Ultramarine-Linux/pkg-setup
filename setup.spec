@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.11.2
-Release: 2%{?dist}
+Version: 2.11.3
+Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
@@ -98,6 +98,9 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Thu Feb 21 2018 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 2.11.3-1
+- Use 65534 as the nobody uid
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.11.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
