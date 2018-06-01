@@ -1,6 +1,6 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.11.4
+Version: 2.12.0
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
@@ -90,14 +90,23 @@ end
 %config(noreplace) /etc/ethertypes
 %config(noreplace) /etc/csh.login
 %config(noreplace) /etc/csh.cshrc
+%config(noreplace) /etc/networks
 %dir /etc/profile.d
 %config(noreplace) /etc/profile.d/sh.local
 %config(noreplace) /etc/profile.d/csh.local
+/etc/profile.d/lang.{sh,csh}
 %config(noreplace) %verify(not md5 size mtime) /etc/shells
 %ghost %attr(0644,root,root) %verify(not md5 size mtime) /var/log/lastlog
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Fri Jun 01 2018 Ondrej Vasik <ovasik@redhat.com> - 2.12.0-1
+- move /etc/networks from initscripts to setup
+- move /etc/profile.d/lang.{sh,csh} from initscripts to setup
+
+* Mon Apr 16 2018 Ondrej Vasik <ovasik@redhat.com> - 2.11.5-1
+- fix crdup typo in /etc/protocols (#1566469)
+
 * Mon Apr 16 2018 Ondrej Vasik <ovasik@redhat.com> - 2.11.4-1
 - don't list nologin in /etc/shells (#1378893)
 
