@@ -3,7 +3,6 @@ Name: setup
 Version: 2.12.6
 Release: 1%{?dist}
 License: Public Domain
-Group: System Environment/Base
 URL: https://pagure.io/setup/
 Source0: http://releases.pagure.org/%{name}/%{name}-%{version}.tar.bz2
 BuildArch: noarch
