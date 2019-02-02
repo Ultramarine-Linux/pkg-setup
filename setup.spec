@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.12.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Public Domain
 URL: https://pagure.io/setup/
 Source0: http://releases.pagure.org/%{name}/%{name}-%{version}.tar.bz2
@@ -109,6 +109,9 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.12.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Thu Dec 13 2018 Robert Fairley <rfairley@redhat.com> - 2.12.6-1
 - add ownership of /run/{motd,motd.d} and /usr/lib/{motd,motd.d}
 
