@@ -1,6 +1,6 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.13.2
+Version: 2.13.3
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
@@ -115,6 +115,9 @@ end
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Tue Apr 09 2019 Ondrej Vasik <ovasik@redhat.com> - 2.13.3-1
+- fix typo in lang.sh (#1697311)
+
 * Sat Feb 23 2019 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 2.13.2-1
 - reset inherited locale settings to C.UTF-8 if invalid (PR#18)
 
