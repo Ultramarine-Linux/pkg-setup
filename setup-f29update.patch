@@ -1,0 +1,141 @@
+diff -urNp setup-2.12.1-orig/lang.csh setup-2.12.1/lang.csh
+--- setup-2.12.1-orig/lang.csh	2018-07-13 14:21:55.000000000 +0200
++++ setup-2.12.1/lang.csh	2019-03-11 08:56:42.000000000 +0100
+@@ -1,8 +1,32 @@
+ # /etc/profile.d/lang.csh - exports environment variables, and provides fallback
+ #                          for CJK languages that can't be displayed in console.
++#                          Resets the locale if unavailable.
+ 
+-if (${?LANG}) then
+-    set LANG_backup=${LANG}
++unset LANG_backup
++
++# If unavailable, reset to the default. Do this before reading in any
++# explicit user configuration. We simply check if locale emits any
++# warnings, and assume that the settings are invalid if it does.
++set locale_error=`(locale >/dev/null) |& cat`
++if ("${locale_error}" != "") then
++    if (${?LANG}) then
++        setenv LANG C.UTF-8
++    endif
++    unsetenv LC_ALL
++    setenv LC_CTYPE C.UTF-8
++    setenv LC_NUMERIC C.UTF-8
++    setenv LC_TIME C.UTF-8
++    setenv LC_COLLATE C.UTF-8
++    setenv LC_MONETARY C.UTF-8
++    setenv LC_MESSAGES C.UTF-8
++    setenv LC_PAPER C.UTF-8
++    setenv LC_NAME C.UTF-8
++    setenv LC_ADDRESS C.UTF-8
++    setenv LC_TELEPHONE C.UTF-8
++    setenv LC_MEASUREMENT C.UTF-8
++    setenv LC_IDENTIFICATION C.UTF-8
++else
++    set LANG_backup=${?LANG}
+ endif
+ 
+ foreach config (/etc/locale.conf "${HOME}/.i18n")
+@@ -16,7 +40,7 @@ if (${?LANG_backup}) then
+     set LANG="${LANG_backup}"
+ endif
+ 
+-unset LANG_backup config
++unset LANG_backup config locale_error
+ 
+ # ----------------------------------------------
+ 
+@@ -24,7 +48,7 @@ unset LANG_backup config
+ # If it is set, then we we expect it is user's explicit override (most likely from ~/.i18n file).
+ # See 'man 7 locale' for more info about LC_ALL.
+ if (${?LC_ALL}) then
+-    if (${LC_ALL} != ${LANG}) then
++    if (${LC_ALL} != ${?LANG} && ${?LANG}) then
+         setenv LC_ALL
+     else
+         unsetenv LC_ALL
+@@ -32,9 +56,9 @@ if (${?LC_ALL}) then
+ endif
+ 
+ # The ${LANG} manipulation is necessary only in virtual terminal (a.k.a. console - /dev/tty*):
+-set in_console=`tty | grep --quiet -e '/dev/tty'; echo $?`
++set in_console=`tty | grep -vc -e '/dev/tty'`
+ 
+-if (${?LANG} && ${TERM} == 'linux' && in_console == 0) then
++if (${?LANG} && ${?TERM} == 'linux' && in_console == 0) then
+     set utf8_used=`echo ${LANG} | grep --quiet -E -i -e '^.+\.utf-?8$'; echo $?`
+ 
+     if (${utf8_used} == 0) then
+diff -urNp setup-2.12.1-orig/lang.sh setup-2.12.1/lang.sh
+--- setup-2.12.1-orig/lang.sh	2018-07-13 14:21:55.000000000 +0200
++++ setup-2.12.1/lang.sh	2019-04-09 09:39:35.000000000 +0200
+@@ -1,14 +1,40 @@
+ # /etc/profile.d/lang.sh - exports environment variables, and provides fallback
+ #                          for CJK languages that can't be displayed in console.
++#                          Resets the locale if unavailable.
+ 
+-if [ -n "${LANG}" ]; then
++unset LANG_backup
++
++# If unavailable, reset to the default. Do this before reading in any
++# explicit user configuration. We simply check if locale emits any
++# warnings, and assume that the settings are invalid if it does.
++if [ -n "$(locale 2>&1 1>/dev/null)" ]; then
++    [ -z "$LANG" ] || LANG=C.UTF-8
++    unset LC_ALL
++    LC_CTYPE="C.UTF-8"
++    LC_NUMERIC="C.UTF-8"
++    LC_TIME="C.UTF-8"
++    LC_COLLATE="C.UTF-8"
++    LC_MONETARY="C.UTF-8"
++    LC_MESSAGES="C.UTF-8"
++    LC_PAPER="C.UTF-8"
++    LC_NAME="C.UTF-8"
++    LC_ADDRESS="C.UTF-8"
++    LC_TELEPHONE="C.UTF-8"
++    LC_MEASUREMENT="C.UTF-8"
++    LC_IDENTIFICATION="C.UTF-8"
++else
+     LANG_backup="${LANG}"
+ fi
+ 
+ for config in /etc/locale.conf "${HOME}/.i18n"; do
+-    # NOTE: We are using eval & sed here to avoid invoking of any commands & functions from those files.
+     if [ -f "${config}" ]; then
+-        eval $(sed -r -e 's/^[[:blank:]]*([[:upper:]_]+)=([[:print:][:digit:]\._-]+|"[[:print:][:digit:]\._-]+")/export \1=\2/;t;d' ${config})
++        # NOTE: We are using eval & sed here to avoid invoking of any commands & functions from those files.
++        if [ -x /usr/bin/sed ]; then
++            eval $(/usr/bin/sed -r -e 's/^[[:blank:]]*([[:upper:]_]+)=([[:print:][:digit:]\._-]+|"[[:print:][:digit:]\._-]+")/export \1=\2/;t;d' ${config})
++        else
++            #but if we don't have sed, let's go old way and source it
++            [ -f "${config}" ] && . "${config}"
++        fi
+     fi
+ done
+ 
+@@ -24,7 +50,7 @@ unset LANG_backup config
+ # If it is set, then we we expect it is user's explicit override (most likely from ~/.i18n file).
+ # See 'man 7 locale' for more info about LC_ALL.
+ if [ -n "${LC_ALL}" ]; then
+-    if [ "${LC_ALL}" != "${LANG}" ]; then
++    if [ "${LC_ALL}" != "${LANG}" -a -n "${LANG}" ]; then
+         export LC_ALL
+     else
+         unset LC_ALL
+diff -urNp setup-2.12.1-orig/profile setup-2.12.1/profile
+--- setup-2.12.1-orig/profile	2018-07-13 14:21:55.000000000 +0200
++++ setup-2.12.1/profile	2018-12-12 09:55:18.000000000 +0100
+@@ -25,10 +25,10 @@ pathmunge () {
+ if [ -x /usr/bin/id ]; then
+     if [ -z "$EUID" ]; then
+         # ksh workaround
+-        EUID=`id -u`
+-        UID=`id -ru`
++        EUID=`/usr/bin/id -u`
++        UID=`/usr/bin/id -ru`
+     fi
+-    USER="`id -un`"
++    USER="`/usr/bin/id -un`"
+     LOGNAME=$USER
+     MAIL="/var/spool/mail/$USER"
+ fi

@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.12.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
@@ -12,6 +12,8 @@ BuildRequires: bash tcsh perl-interpreter
 Requires: system-release
 Conflicts: filesystem < 3
 Conflicts: initscripts < 4.26, bash <= 2.0.4-21
+#various fixes for lang.sh,lang.csh and profile from f30
+Patch1: setup-f29update.patch
 
 %description
 The setup package contains a set of important system configuration and
@@ -19,6 +21,7 @@ setup files, such as passwd, group, and profile.
 
 %prep
 %setup -q
+%patch1 -p1
 ./shadowconvert.sh
 
 %build
@@ -100,6 +103,12 @@ end
 %ghost %verify(not md5 size mtime) %config(noreplace,missingok) /etc/fstab
 
 %changelog
+* Mon Jun 24 2019 Ondrej Vasik <ovasik@redhat.com> - 2.12.1-2
+- fix lang.csh script so it doesn't break tcsh -e scripts (#1620004)
+- use full path for non-builtins in profile and lang.sh (#1648589)
+- reset inherited locale settings to C.UTF-8 if invalid (PR#18)
+- fix typo in lang.sh (#1697311)
+
 * Fri Jul 13 2018 Ondrej Vasik <ovasik@redhat.com> - 2.12.1-1
 - fix cut&paste error in lang.csh script (#1598268)
 
