@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.13.3
-Release: 2%{?dist}
+Version: 2.13.6
+Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
@@ -115,6 +115,14 @@ end
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Thu Oct 03 2019 Martin Osvald <mosvald@redhat.com> - 2.13.6-1
+- csh.login: set PATH again (if empty) to prevent interpreter error (#1744106)
+- aliases: add pcp user (#1744091)
+- lang.csh: fix several variable substitution bugs and typos (#1746749)
+- don't set LANG as a per-shell variable
+- fix lang.csh script so it doesn't break tcsh -e scripts II (#1620004)
+- use full path for non-builtins in csh.cshrc, csh.login, lang.csh, lang.sh and profile (#1747493)
+
 * Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.13.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
