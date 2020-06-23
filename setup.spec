@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.13.6
-Release: 2%{?dist}
+Version: 2.13.7
+Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
@@ -115,6 +115,12 @@ end
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Tue Jun 23 2020 Pavel Zhukov <pzhukov@redhat.com> - 2.13.7-1
+- Switch to hostnamectl
+- Add nrpe tcp port 5666 to /etc/services
+- Do not set umask from profile
+
+
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.13.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
