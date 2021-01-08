@@ -8,6 +8,7 @@ URL: https://pagure.io/setup/
 Source0: http://releases.pagure.org/%{name}/%{name}-%{version}.tar.bz2
 BuildArch: noarch
 #systemd-rpm-macros: required to use _tmpfilesdir macro
+BuildRequires: make
 BuildRequires: bash tcsh perl-interpreter systemd-rpm-macros
 #require system release for saner dependency order
 Requires: system-release
