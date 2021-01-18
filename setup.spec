@@ -5,7 +5,7 @@ Release: 2%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
-Source0: http://releases.pagure.org/%{name}/%{name}-%{version}.tar.bz2
+Source0: https://releases.pagure.org/%{name}/%{name}-%{version}.tar.bz2
 BuildArch: noarch
 #systemd-rpm-macros: required to use _tmpfilesdir macro
 BuildRequires: make
@@ -123,7 +123,6 @@ end
 - Switch to hostnamectl
 - Add nrpe tcp port 5666 to /etc/services
 - Do not set umask from profile
-
 
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.13.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
