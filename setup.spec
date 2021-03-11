@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.13.7
-Release: 3%{?dist}
+Version: 2.13.8
+Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
@@ -116,6 +116,9 @@ end
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Thu Mar 11 2021 Pavel Zhukov <pzhukov@redhat.com> - 2.13.8-1
+- New version v2.13.8
+
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.13.7-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
