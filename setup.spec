@@ -1,11 +1,11 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.13.8
+Version: 2.13.9
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
-Source0: https://releases.pagure.org/%{name}/%{name}-%{version}.tar.bz2
+Source0: https://releases.pagure.org/%{name}/%{name}-%{version}.tar.gz
 BuildArch: noarch
 #systemd-rpm-macros: required to use _tmpfilesdir macro
 BuildRequires: make
@@ -116,6 +116,9 @@ end
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Thu Jul 15 2021 Pavel Zhukov <pzhukov@redhat.com> - 2.13.9-1
+- New version v2.13.9
+
 * Thu Mar 11 2021 Pavel Zhukov <pzhukov@redhat.com> - 2.13.8-1
 - New version v2.13.8
 
