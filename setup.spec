@@ -1,6 +1,6 @@
 Summary: A set of system configuration and setup files
 Name: setup
-Version: 2.13.9
+Version: 2.13.9.1
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Base
@@ -116,6 +116,9 @@ end
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Fri Jul 16 2021 Pavel Zhukov <pzhukov@redhat.com> - 2.13.9.1-1
+- Bugfix release 2.13.9.1
+
 * Thu Jul 15 2021 Pavel Zhukov <pzhukov@redhat.com> - 2.13.9-1
 - New version v2.13.9
 
