@@ -1,7 +1,7 @@
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.13.9.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
@@ -116,6 +116,9 @@ end
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.13.9.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Fri Jul 16 2021 Pavel Zhukov <pzhukov@redhat.com> - 2.13.9.1-1
 - Bugfix release 2.13.9.1
 
