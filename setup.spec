@@ -1,3 +1,4 @@
+%define _disable_source_fetch 0
 Summary: A set of system configuration and setup files
 Name: setup
 Version: 2.13.9.1
@@ -5,7 +6,7 @@ Release: 3%{?dist}
 License: Public Domain
 Group: System Environment/Base
 URL: https://pagure.io/setup/
-Source0: https://releases.pagure.org/%{name}/%{name}-%{version}.tar.gz
+Source0: https://pagure.io/setup/archive/%{name}-%{version}/%{name}-%{name}-%{version}.tar.gz
 BuildArch: noarch
 #systemd-rpm-macros: required to use _tmpfilesdir macro
 BuildRequires: make
@@ -20,7 +21,7 @@ The setup package contains a set of important system configuration and
 setup files, such as passwd, group, and profile.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{name}-%{version}
 ./shadowconvert.sh
 
 %build
@@ -64,6 +65,17 @@ rm -f %{buildroot}/etc/uidgidlint
 rm -f %{buildroot}/etc/shadowconvert.sh
 rm -f %{buildroot}/etc/setup.spec
 rm -rf %{buildroot}/etc/contrib
+
+# Export local bin directory to PATH
+cat <<EOF >%{buildroot}/etc/profile.d/localbin.sh
+# Add the user's bin directory to the PATH
+export PATH="\$HOME/.local/bin:\$PATH"
+EOF
+
+cat <<EOF >%{buildroot}/etc/profile.d/localbin.csh
+# Add the user's bin directory to the PATH
+setenv PATH "\$HOME/.local/bin:\$PATH"
+EOF
 
 #throw away useless and dangerous update stuff until rpm will be able to
 #handle it ( http://rpm.org/ticket/6 )
@@ -109,6 +121,8 @@ end
 %dir /etc/profile.d
 %config(noreplace) /etc/profile.d/sh.local
 %config(noreplace) /etc/profile.d/csh.local
+%config(noreplace) /etc/profile.d/localbin.sh
+%config(noreplace) /etc/profile.d/localbin.csh
 /etc/profile.d/lang.{sh,csh}
 %config(noreplace) %verify(not md5 size mtime) /etc/shells
 %ghost %attr(0644,root,root) %verify(not md5 size mtime) /var/log/lastlog
